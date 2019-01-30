@@ -40,7 +40,7 @@ and invoke the script:
 ```
 sen2cor /path/to/S2B_MSIL1C_METADATA.SAFE
 ```
-This will apply the correction for all resolutions (10, 20, 60) and save the data in the same position.
+This will apply the correction for all resolutions `(10, 20, 60)` and save the data in the same position.
 
 It is also possible to specify a destination folder and the desired resolution:
 ```
