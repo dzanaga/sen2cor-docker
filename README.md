@@ -24,11 +24,12 @@ docker pull redblanket/sen2cor:v1
 ```
 
 ## Installation
-In order to use sen2cor it is sufficient to copy the `sen2cor.sh` run. It will pull the image from the repository and display available commands.
+In order to use sen2cor it is sufficient to copy and run `sen2cor.sh`. It will pull the image from the repository and display available commands.
 
-It's also possible to use the `install.sh` script in the repo:
+For a better experience add it to the PATH using the `install.sh` script in the repo or this snippet:
 ```
 git clone https://github.com/dzanaga/sen2cor-docker.git
+cd sen2cor-docker
 chmod +x sen2cor.sh
 cp sen2cor.sh ~/.local/bin/sen2cor
 ```
