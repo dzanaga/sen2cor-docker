@@ -3,7 +3,7 @@ Docker container and command script for Sen2Cor 2.5.5 (March 2018)
 
 ## Introduction
 
-The docker container is built on top of `ubuntu:bionic` and is based on the Linux64 installer available from ESA [here](http://step.esa.int/main/third-party-plugins-2/sen2cor/)
+The docker container is built on top of `ubuntu:bionic` and is based on the Linux64 installer available from ESA [here](http://step.esa.int/main/third-party-plugins-2/sen2cor/).
 
 ### Dockerfile
 ```
@@ -18,8 +18,8 @@ CMD []
 ```
 
 ### Docker Image
-The container image was pushed to docker hub and can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor)
-It can be obtained with `docker pull redblanket/sen2cor:v1`
+The container image was pushed to docker hub and can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor).
+```docker pull redblanket/sen2cor:v1```
 
 ## Installation
 In order to use sen2cor is sufficient to copy the sen2cor.sh script and run it. It will pull the image from the repository and display available commands.
