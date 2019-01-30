@@ -137,13 +137,14 @@ check_resolution $RESOLUTION
 # echo params: $PARAMS
 
 # Run sen2cor container and convert data
-docker run --rm -v $DATA_INPUT:/sen2cor/data redblanket/sen2cor:v1 $PARAMS
+# docker run --rm -v $DATA_INPUT:/sen2cor/data redblanket/sen2cor:v1 $PARAMS
 
 # Data is outputted in the same input folder (folder mounted in docker container).
 # This will move it to the desired location indicated with the relative parameter.
 if [ "$DATA_INPUT" != "$DATA_OUTPUT" ]; then
     L1C_FILENAME=$BASENAME
-    L2A_PREFIX="S2B_MSIL2A_"
+    L1C_PREFIX=${L1C_FILENAME: 0:7}
+    L2A_PREFIX=$L1C_PREFIX"L2A_"
     L2A_FILENAME=$L2A_PREFIX${L1C_FILENAME: ${#L2A_PREFIX}:${#L1C_FILENAME}}
     mv $DATA_INPUT/$L2A_FILENAME $DATA_OUTPUT/
 fi
