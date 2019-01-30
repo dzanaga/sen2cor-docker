@@ -1,2 +1,2 @@
 #!/bin/bash
-rm /usr/local/bin/s2c
+rm ~/.local/bin/sen2cor

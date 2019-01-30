@@ -1,3 +1,3 @@
 #!/bin/bash
-chmod +x s2c
-cp s2c /usr/local/bin/s2c
+chmod +x sen2cor.sh
+cp sen2cor.sh ~/.local/bin/sen2cor

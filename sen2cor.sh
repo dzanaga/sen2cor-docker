@@ -1,17 +1,23 @@
 #!/bin/bash
+# Command script for Sen2Cor atmospheric correction package [dockerized]
+# To install make the script executable  and place it in a folder in the
+# path, such as /usr/local/bin if you have admin rights. Otherwise execute the
+# script from its location, or put its location in the PATH.
+# N.B. Docker daemon needs to be installed and running.
 
 # Help instructions
 function usage()
 {
     printf "\nCommand script for Sen2Cor atmospheric correction package [dockerized].\n"
-    printf "Example usage: ./s2c [-h|--help] [-r|--resolution {10,20,60}] [-O|--output-folder] S2B_MSIL1C_SCENE-ID.SAFE\n\n"
+    printf "Example usage: ./sen2cor [-h|--help] [-r|--resolution {10,20,60}] [-O|--output-folder] S2B_MSIL1C_SCENE-ID.SAFE\n\n"
     printf "Parameters:\n"
     printf "  -h --help\t\tHelp \n"
     printf "  -r --resolution\tTarget resolution, can be 10, 20 or 60. OPTIONAL: default all resolutions will be processed\n"
     printf "  -O --output-folder\tSpecify output folder. OPTIONAL: default will be input data folder\n\n"
 }
 
-function check_path()  # Will check if output path is absolute or relative
+# Will check if output path is absolute or relative
+function check_path()
 {
   initial="$(echo $1 | head -c 1)"
   if [ "$initial" = "/" ]; then
@@ -21,14 +27,16 @@ function check_path()  # Will check if output path is absolute or relative
   fi
 }
 
-function check_dir_exists()  # Will check and eventually create output folder
+# Will check and eventually create output folder
+function check_dir_exists()
 {
   if [ ! -d "$1" ]; then
     mkdir -p $1
   fi
 }
 
-function check_resolution()  # Ensure input resolution value is acceptable
+# Ensure input resolution value is acceptable
+function check_resolution()
 {
   if [ ! -z "$1" ]; then # RESOLUTION is not empty value
     if [ "$1" -ne 10 -a "$1" -ne 20 -a "$1" -ne 60 ]; then
@@ -37,6 +45,13 @@ function check_resolution()  # Ensure input resolution value is acceptable
     fi
   fi
 }
+
+# function get_l2a_filename()
+# {
+#   L1C_FILENAME=$1
+#   L2A_PREFIX="S2B_MSIL2A_"
+#   L2A_FILENAME=${$L1C_FILENAME: ${#L2A_PREFIX}:${#L1C_FILENAME}}
+# }
 
 # Parameters parser
 PARAMS=""
@@ -97,12 +112,12 @@ else
   DATA_INPUT=$FILENAME_DIR
 fi
 
-echo data_out: $DATA_OUTPUT
-# Check if DATA_OUTPUT was set, in case
+# Check if DATA_OUTPUT was set in the parameters, otherwise default it
 if [ -z "$DATA_OUTPUT" ]; then
   DATA_OUTPUT=$DATA_INPUT
 fi
 
+# Set DATA_OUTPUT to the desired folder (default or relative/absolute parameter)
 check_path $DATA_OUTPUT
 if [ "$DATA_INPUT" = "$DATA_OUTPUT" ]; then
     echo input and output folder: $DATA_INPUT
@@ -121,8 +136,14 @@ check_dir_exists $DATA_OUTPUT
 check_resolution $RESOLUTION
 # echo params: $PARAMS
 
-# docker run --rm -v $DATA_INPUT:/sen2cor/data s2c-test4 $PARAMS
+# Run sen2cor container and convert data
+docker run --rm -v $DATA_INPUT:/sen2cor/data redblanket/sen2cor:v1 $PARAMS
 
+# Data is outputted in the same input folder (folder mounted in docker container).
+# This will move it to the desired location indicated with the relative parameter.
 if [ "$DATA_INPUT" != "$DATA_OUTPUT" ]; then
-    echo mv data to output # todo
+    L1C_FILENAME=$BASENAME
+    L2A_PREFIX="S2B_MSIL2A_"
+    L2A_FILENAME=$L2A_PREFIX${L1C_FILENAME: ${#L2A_PREFIX}:${#L1C_FILENAME}}
+    mv $DATA_INPUT/$L2A_FILENAME $DATA_OUTPUT/
 fi
