@@ -19,7 +19,9 @@ CMD []
 
 ### Docker Image
 The container image was pushed to docker hub and can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor).
-```docker pull redblanket/sen2cor:v1```
+```
+docker pull redblanket/sen2cor:v1
+```
 
 ## Installation
 In order to use sen2cor is sufficient to copy the sen2cor.sh script and run it. It will pull the image from the repository and display available commands.
