@@ -137,7 +137,7 @@ check_resolution $RESOLUTION
 # echo params: $PARAMS
 
 # Run sen2cor container and convert data
-# docker run --rm -v $DATA_INPUT:/sen2cor/data redblanket/sen2cor:v1 $PARAMS
+docker run --rm -v $DATA_INPUT:/sen2cor/data redblanket/sen2cor:v1 $PARAMS
 
 # Data is outputted in the same input folder (folder mounted in docker container).
 # This will move it to the desired location indicated with the relative parameter.
