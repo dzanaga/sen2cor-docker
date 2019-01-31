@@ -101,7 +101,7 @@ fi
 # Get folder of input data
 check_path $FILENAME
 FILENAME_DIR=$(dirname "${FILENAME}")
-echo $FILENAME_DIR
+# echo $FILENAME_DIR
 if [ "$is_absolute" = "false" ]; then
   if [ "$FILENAME_DIR" = "." ]; then
     DATA_INPUT=$PWD
