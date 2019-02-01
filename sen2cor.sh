@@ -46,13 +46,6 @@ function check_resolution()
   fi
 }
 
-# function get_l2a_filename()
-# {
-#   L1C_FILENAME=$1
-#   L2A_PREFIX="S2B_MSIL2A_"
-#   L2A_FILENAME=${$L1C_FILENAME: ${#L2A_PREFIX}:${#L1C_FILENAME}}
-# }
-
 # Parameters parser
 PARAMS=""
 while (( "$#" )); do
