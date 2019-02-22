@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import re
-import shutil
+# import shutil
 
 
 def _l2a_name(l1c_name):
@@ -39,15 +39,11 @@ if __name__ == '__main__':
     input_folder = os.path.dirname(args.input)
     filename = os.path.basename(args.input)
 
-    l2a_name = _l2a_name(filename)
-    tilename = _tilename(filename)
-    output_folder = os.path.join(args.output, _tilename(filename))
-
     # Every process has its own log folder to avoid problems with .progress
     # and .estimation files in the log
-    
-    log_folder = os.path.join(args.log, "filename")
+    log_folder = os.path.join(args.log, _l2a_name(filename))
     # host_tmp_output = '/home/{}/sen2cor_output'.format(username)
+    output_folder = os.path.join(args.output, _tilename(filename))
 
     volumes = {'{}'.format(input_folder):  {'bind': '/input', 'mode': 'ro'},
                output_folder:  {'bind': '/tmp_l2a', 'mode': 'rw'},
@@ -56,12 +52,10 @@ if __name__ == '__main__':
                log_folder: {'bind': container_log, 'mode': 'rw'}
                }
 
-    import pprint
-    pprint.pprint(volumes)
-
     client = docker.from_env()
     client.containers.run("redblanket/sen2cor:latest",
-                          "{} --resolution 60".format(os.path.join("/input", filename)),
+                          "{}".format(os.path.join("/input", filename)),
+                          auto_remove=True,
                           volumes=volumes)
 
     # tile_path = os.path.join(args.output, _tilename(filename))
