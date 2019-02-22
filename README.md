@@ -5,22 +5,21 @@ Docker container and command script for Sen2Cor 2.5.5 (March 2018)
 
 The docker container is built on top of `ubuntu:bionic` and is based on the Linux64 installer available from ESA [here](http://step.esa.int/main/third-party-plugins-2/sen2cor/).
 
-### Dockerfile
-```
-FROM ubuntu:bionic
-WORKDIR /sen2cor
-RUN apt-get update && \
-    apt-get install -y wget file && \
-    wget http://step.esa.int/thirdparties/sen2cor/2.5.5/Sen2Cor-02.05.05-Linux64.run -O ./s2c.run && \
-    chmod +x s2c.run && ./s2c.run && rm s2c.run && mkdir data
-ENTRYPOINT ["/sen2cor/Sen2Cor-02.05.05-Linux64/bin/L2A_Process"]
-CMD []
-```
+A configuration file is loaded from the repository. This version includes the configuration of the `dem` folder.
+At run time the `/root/sen2cor/2.5/dem` folder can be mounted on a shared drive/s3bucket in order to be shared among the nodes in the cluster.
+An `aux_data` folder containing the CCI data (the folder should also contain the original `GlobalSnowMap.tiff` and `__init__.py` files) can also be mounted to `/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor/aux_data` in order to use CCI data.
 
 ### Docker Image
-The container image was pushed to docker hub and can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor).
+The container image can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor).
 ```
-docker pull redblanket/sen2cor:v1
+docker pull redblanket/sen2cor:latest
+```
+
+#### Inner container info
+
+```
+SEN2COR_HOME=/root/sen2cor/2.5
+SEN2COR_BIN=/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor
 ```
 
 ## Installation
