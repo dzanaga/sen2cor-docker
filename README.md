@@ -9,6 +9,7 @@ A configuration file is loaded from the repository. This version includes the co
 At run time the `/root/sen2cor/2.5/dem` folder can be mounted on a shared drive/s3bucket in order to be shared among the nodes in the cluster.
 An `aux_data` folder containing the CCI data (the folder should also contain the original `GlobalSnowMap.tiff` and `__init__.py` files) can also be mounted to `/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor/aux_data` in order to use CCI data.
 
+
 ### Docker Image
 The container image can be found [here](https://cloud.docker.com/u/redblanket/repository/docker/redblanket/sen2cor).
 ```
