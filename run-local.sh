@@ -34,6 +34,4 @@ docker run --rm -it -v ${INPUT_FOLDER}:"/tmp/input" \
                     -v ${DEM_DATA}:"${SEN2COR_HOME}/dem" \
                     -v ${LOG_DATA}:"${SEN2COR_HOME}/log" \
                     -e HOSTUSER_ID=`id -u` \
-                    -e INPUT="${INPUT_COMMAND}" \
-                    --entrypoint bash \
-                    redblanket/sen2cor:latest
+                    redblanket/sen2cor:latest ${INPUT_COMMAND}
