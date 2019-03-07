@@ -16,14 +16,20 @@ OUTPUT_TMP="/tmp/output_tmp"
 
 # if host user id is given to container, create that user and change permissions of files
 if [ ! -z "$HOSTUSER_ID" ]; then
+
+  # in case group id is not specified, use user id
+  if [ -z "$HOSTGROUP_ID" ]; then
+    HOSTGROUP_ID=$HOSTUSER_ID
+  fi
+
   # create host user inside container
-  groupadd -g $HOSTUSER_ID user
-  useradd --shell /bin/bash -u $HOSTUSER_ID -g $HOSTUSER_ID -o -c "" -m user
+  groupadd -g $HOSTGROUP_ID hostgroup
+  useradd --shell /bin/bash -u $HOSTUSER_ID -g $HOSTGROUP_ID -o -c "" -m user
 
-  chown -R user:user "$OUTPUT_TMP"
+  chown -R user:hostgroup "$OUTPUT_TMP"
 
-  chown -R user:user "$SEN2COR_HOME/dem"
-  chown -R user:user "$SEN2COR_HOME/log"
+  chown -R user:hostgroup "$SEN2COR_HOME/dem"
+  chown -R user:hostgroup "$SEN2COR_HOME/log"
 fi
 
 # move files to mounted output folder
