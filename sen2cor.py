@@ -249,6 +249,8 @@ def _parse_args():
 
 if __name__ == '__main__':
 
+    sen2cor_image = "redblanket/sen2cor:latest"
+
     args, unknown_args = _parse_args()
 
     input_product = args.input
@@ -261,5 +263,5 @@ if __name__ == '__main__':
     uid = args.uid
     gid = args.gid
 
-    sen2cor(input_product, output_dir, sen2cor_home,
+    sen2cor(input_product, output_dir, sen2cor_home, sen2cor_image=sen2cor_image,
             s2c_options=s2c_options, expand_dir=expand_dir, uid=uid, gid=gid)
