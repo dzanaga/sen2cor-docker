@@ -11,8 +11,8 @@ OUTPUT="/tmp/output"
 # cluster shared drive/S3 bucket mounted on OUTPUT)
 OUTPUT_TMP="/tmp/output_tmp"
 
-# Run sen2cor
-/tmp/sen2cor/Sen2Cor-02.05.05-Linux64/bin/L2A_Process "$@"
+# Run sen2cor (timeout of 4000 seconds prevent sen2cor to stay in error loop)
+timeout 4500 /tmp/sen2cor/Sen2Cor-02.05.05-Linux64/bin/L2A_Process "$@"
 
 # if host user id is given to container, create that user and change permissions of files
 if [ ! -z "$HOSTUSER_ID" ]; then
