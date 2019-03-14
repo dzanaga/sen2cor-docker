@@ -12,11 +12,7 @@ OUTPUT="/tmp/output"
 OUTPUT_TMP="/tmp/output_tmp"
 
 # Run sen2cor (timeout of 4000 seconds prevent sen2cor to stay in error loop)
-<<<<<<< HEAD
 timeout 4500 /tmp/sen2cor/Sen2Cor-02.05.05-Linux64/bin/L2A_Process "$@"
-=======
-timeout 4000 /tmp/sen2cor/Sen2Cor-02.05.05-Linux64/bin/L2A_Process "$@"
->>>>>>> dde6bc4b5e235fd6f99d0d5d535f1f35d5bf6d5d
 
 # if host user id is given to container, create that user and change permissions of files
 if [ ! -z "$HOSTUSER_ID" ]; then
