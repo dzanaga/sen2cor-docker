@@ -46,3 +46,13 @@ It is also possible to specify a destination folder and the desired resolution:
 ```
 sen2cor --resolution 60 --output-folder /path/to/destination/folder/ /path/to/S2B_MSIL1C_METADATA.SAFE
 ```
+
+# Notes
+2.8 installation message
+```
+Configuring...
+copying /tmp/sen2cor/Sen2Cor-02.08.00-Linux64/lib/python2.7/site-packages/sen2cor/cfg/L2A_GIPP.xml to /root/sen2cor/2.8/cfg/L2A_GIPP.xml!
+Congratulations, Installation successful...
+You can call L2A processor with '/tmp/sen2cor/Sen2Cor-02.08.00-Linux64/bin/L2A_Process'
+Default configuration file is '/root/sen2cor/2.8/cfg/L2A_GIPP.xml'
+```

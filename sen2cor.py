@@ -11,16 +11,26 @@ import random
 import string
 import shutil
 
+SEN2COR_HOME = "/root/sen2cor/2.8"
+SEN2COR_BIN = ("/tmp/sen2cor/Sen2Cor-02.08.00-Linux64/"
+               + "lib/python2.7/site-packages/sen2cor")
+
+DOCKER_REPO = "vito-docker-private.artifactory.vgt.vito.be"
+DOCKER_IMAGE = "sen2cor:latest"
+
 
 def _l2a(l1c_name):
+    """Change L1C name to L2A product name"""
     return re.sub("L1C_", "L2A_", l1c_name)
 
 
 def _tilename(l1c_name):
+    """Get tile from product name"""
     return re.findall("_T(.*?)_", l1c_name)[0]
 
 
 def _user_info(user=None, uid=None, gid=None):
+    """Get user name, uid and gid"""
     import pwd
     import grp
 
@@ -35,19 +45,22 @@ def _user_info(user=None, uid=None, gid=None):
 
 
 def random_string(n=10):
+    """Generate a random string"""
     return "s2c_" + ''.join(random.choice(string.ascii_letters + string.digits)
                             for _ in range(n))
 
 
 def _product(l1c_path):
-
-    product_dir, basename = os.path.dirname(l1c_path), os.path.basename(l1c_path)
+    """Get folder, product_id and extension of product"""
+    product_dir, basename = (os.path.dirname(l1c_path),
+                             os.path.basename(l1c_path))
     product_id, product_type = basename.split('.')
 
     return product_dir, product_id, product_type
 
 
 def unzip(filename, dirname):
+    """Unzip .zip file to destination dirname"""
     # Check if L1C.SAFE exists. Eventually delete and expand again
     filename_safe = filename[:-4] + ".SAFE"
     if os.path.isdir(filename_safe):
@@ -58,10 +71,11 @@ def unzip(filename, dirname):
 
 
 def _container_folders():
+    """Container folders auxiliary files (CCI, dem, log)"""
     # Container paths variables
     # se2cor paths inside the docker container
-    sen2cor_home = "/root/sen2cor/2.5"
-    sen2cor_bin = "/tmp/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor"
+    sen2cor_home = SEN2COR_HOME
+    sen2cor_bin = SEN2COR_BIN
 
     # container folders
     container_input = '/tmp/input'
@@ -70,15 +84,18 @@ def _container_folders():
     container_aux_data = os.path.join(sen2cor_bin, "aux_data")
     container_dem = os.path.join(sen2cor_home, "dem")
 
-    return container_input, container_output, container_log, container_aux_data, container_dem
+    return (container_input, container_output, container_log,
+            container_aux_data, container_dem)
 
 
 class ContainerConfig:
-    """Structure to load container paths.
-    TODO: Load from json/yaml/config file"""
+    """
+    Structure to load container paths.
+    TODO: Load from json/yaml/config file
+    """
 
-    sen2cor_home = "/root/sen2cor/2.5"
-    sen2cor_bin = "/tmp/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor"
+    sen2cor_home = SEN2COR_HOME
+    sen2cor_bin = SEN2COR_BIN
 
     # container folders
     input = '/tmp/input'
@@ -89,13 +106,15 @@ class ContainerConfig:
 
 
 def _volumes(l2a_id, product_dir, output_dir, log_dir, auxdata=None, dem=None):
-    """ Returns dictionary of mount points for docker volume """
+    """Returns dictionary of mount points for docker volume"""
     # check that no mount points overlap
     if len(set([product_dir, output_dir, log_dir])) < 3:
-        raise ValueError(" 'product_dir', 'output_dir' and 'log_dir' must be different")
+        raise ValueError(" 'product_dir', 'output_dir' and 'log_dir'"
+                         + " must be different")
 
     # host folders to mount on container
-    # container_input, container_output, container_log, container_aux_data, container_dem = _container_folders()
+    # container_input, container_output, container_log, container_aux_data,
+    # container_dem = _container_folders()
     container_cfg = ContainerConfig()
 
     log_folder = os.path.join(log_dir, l2a_id)
@@ -107,7 +126,8 @@ def _volumes(l2a_id, product_dir, output_dir, log_dir, auxdata=None, dem=None):
                }
     if auxdata:
         if not os.path.isdir(auxdata):
-            raise ValueError("Mount path given for 'auxdata' folder '{}' does not exists.")
+            raise ValueError("Mount path for 'auxdata' "
+                             + "folder '{}' does not exists.")
         volumes[auxdata] = {'bind': container_cfg.auxdata, 'mode': 'rw'}
     if dem:
         volumes[dem] = {'bind': container_cfg.dem, 'mode': 'rw'}
@@ -142,15 +162,18 @@ def sen2cor_docker(sen2cor_image, docker_command, volumes, container_name, uid,
                                           docker_command,
                                           name=container_name,
                                           auto_remove=True,
-                                          environment=["HOSTUSER_ID={}".format(uid),
-                                                       "HOSTGROUP_ID={}".format(gid)],
+                                          environment=["HOSTUSER_ID={}"
+                                                       .format(uid),
+                                                       "HOSTGROUP_ID={}"
+                                                       .format(gid)],
                                           volumes=volumes)
         return container
     else:
         # use subprocess routine
         cmd = " ".join(["docker run --rm"]
                        + ["--name {}".format(container_name)]
-                       + ["-v {}:{}".format(k, v['bind']) for k, v in volumes.items()]
+                       + ["-v {}:{}".format(k, v['bind'])
+                          for k, v in volumes.items()]
                        + ["-e HOSTUSER_ID={}".format(uid)]
                        + ["-e HOSTGROUP_ID={}".format(gid)]
                        + [sen2cor_image, docker_command]
@@ -177,11 +200,10 @@ def sen2cor(input_path, output_dir, sen2cor_home,
 
     # catch signals to update PID state when job is killed
     # trapping SIGKILL and SIGSTOP is not possible
-    signal.signal(signal.SIGHUP, handle_signal)  # in case job is killed via Yarn
+    signal.signal(signal.SIGHUP, handle_signal)  # in case job killed by Yarn
     signal.signal(signal.SIGINT, handle_signal)
     signal.signal(signal.SIGTERM, handle_signal)
     signal.signal(signal.SIGQUIT, handle_signal)
-    # End Signal Handling block
 
     # setup logger
     logging.basicConfig(format='%(asctime)s %(message)s',
@@ -207,17 +229,20 @@ def sen2cor(input_path, output_dir, sen2cor_home,
 
     # Check that output L2A folder doesn't exists already, otherwise terminate
     if os.path.isdir(l2a_path):
-        logging.info("Output folder exists already {} - Terminating.".format(l2a_path))
-        return
+        logging.info("Output folder already exists {} - Terminating."
+                     .format(l2a_path))
+        return None
 
     # docker settings
     log_dir, auxdata, dem = _sen2cor_home_folders(sen2cor_home)
     volumes = _volumes(l2a_id, product_dir, output_dir, log_dir, auxdata, dem)
     if not sen2cor_image:
-        sen2cor_image = "vito-docker-private.artifactory.vgt.vito.be/sen2cor:latest"
+        sen2cor_image = ("{}/".format(DOCKER_REPO)
+                         + "sen2cor:latest")
     user, uid, gid = _user_info(None, uid, gid)
     container_input = _container_folders()[0]
-    docker_command = " ".join([s2c_options, os.path.join(container_input, l1c_basename)])
+    docker_command = " ".join([s2c_options, os.path.join(container_input,
+                                                         l1c_basename)])
 
     # run sen2cor docker
     start_time = time.time()
@@ -237,10 +262,15 @@ def sen2cor(input_path, output_dir, sen2cor_home,
 def _parse_args():
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("input", help="Input L1C product (.zip/.SAFE absolute path)")
-    parser.add_argument("-o", "--output-dir", help="Output directory for L2A products")
-    parser.add_argument("-s", "--sen2cor-home", help="Sen2cor home folder containing aux_data, dem, log folders")
-    parser.add_argument("-e", "--expand-dir", help="Unzip location of L1C products. DEFAULT: same location of L1C zip files")
+    parser.add_argument("input",
+                        help="Input L1C product (.zip/.SAFE absolute path)")
+    parser.add_argument("-o", "--output-dir",
+                        help="Output directory for L2A products")
+    parser.add_argument("-s", "--sen2cor-home",
+                        help="Sen2cor home containing aux_data, dem, log dirs")
+    parser.add_argument("-e", "--expand-dir",
+                        help="Unzip location of L1C products. "
+                        + "DEFAULT: same location of L1C zip files")
     parser.add_argument("-u", "--uid", help="User id to run the container")
     parser.add_argument("-g", "--gid", help="Group id to run the container")
 
@@ -263,5 +293,6 @@ if __name__ == '__main__':
     uid = args.uid
     gid = args.gid
 
-    sen2cor(input_product, output_dir, sen2cor_home, sen2cor_image=sen2cor_image,
+    sen2cor(input_product, output_dir, sen2cor_home,
+            sen2cor_image=sen2cor_image,
             s2c_options=s2c_options, expand_dir=expand_dir, uid=uid, gid=gid)
