@@ -279,7 +279,7 @@ def _parse_args():
 
 if __name__ == '__main__':
 
-    sen2cor_image = "redblanket/sen2cor:latest"
+    sen2cor_image = "{}/{}".format(DOCKER_REPO, DOCKER_IMAGE)
 
     args, unknown_args = _parse_args()
 
