@@ -2,7 +2,7 @@
 
 # inner container sen2cor cfg settings folder
 SEN2COR_HOME="/root/sen2cor/2.8"
-SEN2COR_BIN="/tmp/sen2cor/Sen2Cor-02.08.00-Linux64/bin"
+SEN2COR_PROCBIN="/tmp/sen2cor/Sen2Cor-02.08.00-Linux64/bin"
 # output folder that will be mounted on the shared drive/S3 bucket
 OUTPUT="/tmp/output"
 
@@ -12,7 +12,7 @@ OUTPUT="/tmp/output"
 OUTPUT_TMP="/tmp/output_tmp"
 
 # Run sen2cor (timeout of 4500 seconds prevent sen2cor to stay in error loop)
-timeout 4500 ${SEN2COR_BIN}/L2A_Process "$@"
+timeout 4500 ${SEN2COR_PROCBIN}/L2A_Process --output_dir ${OUTPUT_TMP} "$@"
 
 # if host user id is given to container, create that user and change permissions of files
 if [ ! -z "$HOSTUSER_ID" ]; then
