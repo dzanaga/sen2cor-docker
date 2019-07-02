@@ -216,7 +216,7 @@ def sen2cor(input_path, output_dir, sen2cor_home,
     # If the input product is a zip, unzip it to expand_dir location
     if product_type == "zip":
         # if expand_dir is given, unzip L1C.SAFE there
-        if not expand_dir:
+        if expand_dir:
             product_dir = expand_dir
         unzip(input_path, product_dir)
 
