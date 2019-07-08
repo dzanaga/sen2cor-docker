@@ -66,7 +66,7 @@ def unzip(filename, dirname):
     if os.path.isdir(filename_safe):
         shutil.rmtree(filename_safe)
     print('Unzipping {}'.format(filename))
-    subprocess.call("unzip {} -d {}".format(filename, dirname), shell=True)
+    subprocess.call("/usr/bin/unzip -o {} -d {}".format(filename, dirname), shell=True)
     print('\n')
 
 
