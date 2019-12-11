@@ -1,5 +1,5 @@
 # sen2cor-docker
-Docker container and command script for Sen2Cor 2.8.0 (March 2018)
+Docker container and command script for Sen2Cor 2.8.0
 
 ## Introduction
 
