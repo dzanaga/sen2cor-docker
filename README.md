@@ -1,5 +1,5 @@
 # sen2cor-docker
-Docker container and command script for Sen2Cor 2.5.5 (March 2018)
+Docker container and command script for Sen2Cor 2.8.0 (March 2018)
 
 ## Introduction
 
@@ -19,8 +19,8 @@ docker pull redblanket/sen2cor:latest
 #### Inner container info
 
 ```
-SEN2COR_HOME=/root/sen2cor/2.5
-SEN2COR_BIN=/sen2cor/Sen2Cor-02.05.05-Linux64/lib/python2.7/site-packages/sen2cor
+SEN2COR_HOME=/root/sen2cor/2.8
+SEN2COR_BIN=/sen2cor/Sen2Cor-02.08.00-Linux64/lib/python2.7/site-packages/sen2cor
 ```
 
 ## Installation
