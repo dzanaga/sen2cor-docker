@@ -8,9 +8,9 @@
          feature implemented with OpenJPEG 2.3., improving the speed for importing the Bands.
          If AUTO is chosen, the number of treads are deduced, using cpu_count().
          Set this to 1 up to a maximum of 8, if this automatic mode will not fit to your platform -->
-    <DEM_Directory>dem</DEM_Directory>
+    <DEM_Directory>NONE</DEM_Directory>
     <!-- should be either a directory in the sen2cor home folder or 'NONE'. If NONE, no DEM will be used -->
-    <DEM_Reference>http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/</DEM_Reference>
+    <DEM_Reference>NONE</DEM_Reference>
     <!-- DEM_Reference>http://data_public:GDdci@data.cgiar-csi.org/srtm/tiles/GeoTIFF/</DEM_Reference -->
     <!-- disable / enable the upper two rows if you want to use an SRTM DEM -->
     <!-- The SRTM DEM will then be downloaded from this reference, if no local DEM is available -->
